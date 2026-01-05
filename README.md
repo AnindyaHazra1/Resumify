@@ -63,7 +63,7 @@
 
 ## 📸 Screenshots
 
-*(Add your screenshots here to make it look even better!)*
+![App Screenshot](public/screenshots/resume_preview.png)
 
 ## 🤝 Contributing
 
