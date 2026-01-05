@@ -30,40 +30,8 @@
 - **AI**: Google Gemini API
 - **Exporting**: `docx` library, `file-saver`, Browser Print API
 
-## 🚀 Getting Started
-
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) (v16+)
-- [Gemini API Key](https://aistudio.google.com/)
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/AnindyaHazra1/Resumify.git
-   cd Resumify
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Set up environment variables**
-   Create a `.env` file in the root directory:
-   ```env
-   VITE_GEMINI_API_KEY=your_api_key_here
-   ```
-
-4. **Run the development server**
-   ```bash
-   npm run dev
-   ```
-
 ## 📸 Screenshots
 
-*(Add your screenshots here to make it look even better!)*
 
 ## 🤝 Contributing
 
