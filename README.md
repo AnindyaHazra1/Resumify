@@ -13,7 +13,7 @@
 
 ## ✨ Features
 
-- **🚀 AI Smart Suggestions**: Real-time bullet-point generation for experience and skills using Gemini AI.
+- **🚀 AI Smart Suggestions**: Real-time bullet-point generation for experience and skills using AI.
 - **📈 ATS-Optimized Layouts**: Designed to pass through Applicant Tracking Systems with high scores.
 - **🎨 Dynamic Customization**: Change themes, colors, and premium fonts (Inter, Outfit, etc.) instantly.
 - **📄 Multi-Format Export**:
