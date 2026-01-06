@@ -6,6 +6,7 @@
 
   [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
   [![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
+  [![Live Demo](https://img.shields.io/badge/Live_Demo-Visit_Site-success?style=for-the-badge&logo=vercel)](https://ats-resume-builder-psi.vercel.app)
 </div>
 
 ---
@@ -13,6 +14,7 @@
 ## ✨ Features
 
 - **🚀 AI Smart Suggestions**: Real-time bullet-point generation for experience and skills using AI.
+- **🔍 SEO Optimized**: Google-ready with meta tags, sitemap, and rich social previews.
 - **📈 ATS-Optimized Layouts**: Designed to pass through Applicant Tracking Systems with high scores.
 - **🎨 Dynamic Customization**: Change themes, colors, and premium fonts (Inter, Outfit, etc.) instantly.
 - **📄 Multi-Format Export**:
