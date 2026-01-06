@@ -153,6 +153,15 @@ const FontSelector = ({ currentFont, onFontChange }) => {
             transform-origin: top right;
         }
 
+        @media (max-width: 768px) {
+            .font-dropdown {
+                right: auto;
+                left: 0; /* Align left on mobile to avoid off-screen to the right if button is on edge */
+                transform-origin: top left;
+                width: 150px;
+            }
+        }
+
         @keyframes scaleIn {
             from { opacity: 0; transform: scale(0.95) translateY(-5px); }
             to { opacity: 1; transform: scale(1) translateY(0); }

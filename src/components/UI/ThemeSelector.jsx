@@ -2,52 +2,60 @@ import { Palette, RotateCcw } from 'lucide-react';
 import { useRef } from 'react';
 
 const ThemeSelector = ({ currentColor, onThemeChange }) => {
-    const inputRef = useRef(null);
-    const DEFAULT_COLOR = '#ffe4d1';
+  const inputRef = useRef(null);
+  const DEFAULT_COLOR = '#ffe4d1';
 
-    const handleCircleClick = () => {
-        inputRef.current?.click();
-    };
+  const handleCircleClick = () => {
+    inputRef.current?.click();
+  };
 
-    return (
-        <div className="theme-selector">
-            <div className="selector-group">
-                <div
-                    className="color-trigger"
-                    onClick={handleCircleClick}
-                    title="Change Accent Color"
-                >
-                    <div className="color-preview" style={{ backgroundColor: currentColor || DEFAULT_COLOR }}></div>
-                    <div className="icon-overlay">
-                        <Palette size={14} color={getContrastColor(currentColor || DEFAULT_COLOR)} />
-                    </div>
-                </div>
+  return (
+    <div className="theme-selector">
+      <div className="selector-group">
+        <div
+          className="color-trigger"
+          onClick={handleCircleClick}
+          title="Change Accent Color"
+        >
+          <div className="color-preview" style={{ backgroundColor: currentColor || DEFAULT_COLOR }}></div>
+          <div className="icon-overlay">
+            <Palette size={14} color={getContrastColor(currentColor || DEFAULT_COLOR)} />
+          </div>
+        </div>
 
-                <input
-                    ref={inputRef}
-                    type="color"
-                    className="hidden-input"
-                    value={currentColor || DEFAULT_COLOR}
-                    onChange={(e) => onThemeChange(e.target.value)}
-                />
+        <input
+          ref={inputRef}
+          type="color"
+          className="hidden-input"
+          value={currentColor || DEFAULT_COLOR}
+          onChange={(e) => onThemeChange(e.target.value)}
+        />
 
-                <button
-                    className="reset-btn"
-                    onClick={() => onThemeChange(DEFAULT_COLOR)}
-                    title="Reset to Default Peach"
-                    aria-label="Reset color"
-                >
-                    <RotateCcw size={14} />
-                </button>
-            </div>
+        <button
+          className="reset-btn"
+          onClick={() => onThemeChange(DEFAULT_COLOR)}
+          title="Reset to Default Peach"
+          aria-label="Reset color"
+        >
+          <RotateCcw size={14} />
+        </button>
+      </div>
 
-            <style jsx="true">{`
+      <style jsx="true">{`
         .theme-selector {
           display: flex;
           align-items: center;
           margin-right: 12px;
           padding-right: 12px;
           border-right: 1px solid hsl(var(--color-border));
+        }
+
+        @media (max-width: 768px) {
+           .theme-selector {
+             margin-right: 8px;
+             padding-right: 8px;
+             /* Keep border for separation but reduce space */
+           }
         }
 
         .selector-group {
@@ -125,21 +133,21 @@ const ThemeSelector = ({ currentColor, onThemeChange }) => {
           transform: rotate(-45deg);
         }
       `}</style>
-        </div>
-    );
+    </div>
+  );
 };
 
 // Helper to decide icon color (black or white) based on background
 const getContrastColor = (hexColor) => {
-    // Simple check: if undefined or short, default black
-    if (!hexColor) return '#000';
+  // Simple check: if undefined or short, default black
+  if (!hexColor) return '#000';
 
-    const r = parseInt(hexColor.substr(1, 2), 16);
-    const g = parseInt(hexColor.substr(3, 2), 16);
-    const b = parseInt(hexColor.substr(5, 2), 16);
+  const r = parseInt(hexColor.substr(1, 2), 16);
+  const g = parseInt(hexColor.substr(3, 2), 16);
+  const b = parseInt(hexColor.substr(5, 2), 16);
 
-    const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
-    return (yiq >= 128) ? '#000000' : '#ffffff';
+  const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+  return (yiq >= 128) ? '#000000' : '#ffffff';
 }
 
 export default ThemeSelector;
