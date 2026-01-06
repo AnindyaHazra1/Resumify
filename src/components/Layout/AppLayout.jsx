@@ -1,22 +1,22 @@
-import { Download, RotateCcw, FileDown } from 'lucide-react';
+import { Download, RotateCcw, FileDown, Edit3, Eye } from 'lucide-react';
 import { useResume } from '../../context/ResumeContext';
 import { useState } from 'react';
 import ConfirmModal from '../UI/ConfirmModal';
 import ThemeSelector from '../UI/ThemeSelector';
 import FontSelector from '../UI/FontSelector';
-import Logo from '../../assets/logo.png'; // Import the logo
+import Logo from '../../assets/logo.png';
 
 const AppLayout = ({ editor, preview }) => {
   const { resetResume, resumeData, handleThemeChange, handleFontChange } = useResume();
   const [isExporting, setIsExporting] = useState(false);
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+  const [activeMobileTab, setActiveMobileTab] = useState('editor'); // 'editor' or 'preview'
 
   const handleExportPDF = () => {
     const originalTitle = document.title;
     const name = resumeData.personal?.fullName?.replace(/\s+/g, '_') || 'Resume';
     document.title = `${name}_Resume_Resumify`;
     window.print();
-    // Restore title after print dialog closes (print is blocking in most browsers)
     document.title = originalTitle;
   };
 
@@ -45,37 +45,70 @@ const AppLayout = ({ editor, preview }) => {
             <h1>Resumify</h1>
           </div>
           <div className="actions">
-            <FontSelector
-              currentFont={resumeData.theme?.font}
-              onFontChange={handleFontChange}
-            />
-            <ThemeSelector
-              currentColor={resumeData.theme?.color}
-              onThemeChange={handleThemeChange}
-            />
-            <button className="btn btn-danger" onClick={() => setIsResetModalOpen(true)}>
-              <RotateCcw size={16} />
+            <div className="desktop-actions">
+              <FontSelector
+                currentFont={resumeData.theme?.font}
+                onFontChange={handleFontChange}
+              />
+              <ThemeSelector
+                currentColor={resumeData.theme?.color}
+                onThemeChange={handleThemeChange}
+              />
+            </div>
+
+            <button className="btn btn-danger icon-only-mobile" onClick={() => setIsResetModalOpen(true)} title="Reset">
+              <RotateCcw size={18} />
               <span className="btn-text">Reset</span>
             </button>
             <div className="divider"></div>
-            <button className="btn btn-secondary" onClick={handleExportDOCX} disabled={isExporting}>
-              <FileDown size={16} />
-              {isExporting ? 'Generating...' : 'Word'}
+            <button className="btn btn-secondary icon-only-mobile" onClick={handleExportDOCX} disabled={isExporting} title="Export Word">
+              <FileDown size={18} />
+              <span className="btn-text">{isExporting ? '...' : 'Word'}</span>
             </button>
-            <button className="btn btn-primary" onClick={handleExportPDF}>
-              <Download size={16} />
-              PDF
+            <button className="btn btn-primary icon-only-mobile" onClick={handleExportPDF} title="Export PDF">
+              <Download size={18} />
+              <span className="btn-text">PDF</span>
             </button>
           </div>
         </div>
       </header>
 
-      {/* Main Content Split */}
+      {/* Main Content */}
       <main className="main-content">
-        <div className="split-container">
+        {/* Mobile Tab Switcher */}
+        <div className="mobile-tabs">
+          <button
+            className={`tab-btn ${activeMobileTab === 'editor' ? 'active' : ''}`}
+            onClick={() => setActiveMobileTab('editor')}
+          >
+            <Edit3 size={16} /> Editor
+          </button>
+          <button
+            className={`tab-btn ${activeMobileTab === 'preview' ? 'active' : ''}`}
+            onClick={() => setActiveMobileTab('preview')}
+          >
+            <Eye size={16} /> Preview
+          </button>
+        </div>
+
+        <div className={`split-container mobile-tab-${activeMobileTab}`}>
           <div className="editor-pane">
             <div className="pane-content">
-              <h2 className="editor-title">Build Your Resume</h2>
+              <div className="editor-header-mobile">
+                <h2 className="editor-title">Build Your Resume</h2>
+                <div className="mobile-settings-row">
+                  {/* Fallback settings for mobile if they don't fit in header */}
+                  <FontSelector
+                    currentFont={resumeData.theme?.font}
+                    onFontChange={handleFontChange}
+                  />
+                  <ThemeSelector
+                    currentColor={resumeData.theme?.color}
+                    onThemeChange={handleThemeChange}
+                  />
+                </div>
+              </div>
+
               <p className="editor-subtitle">Fill in your details below. The preview updates automatically.</p>
               <div className="editor-forms">
                 {editor}
@@ -109,9 +142,9 @@ const AppLayout = ({ editor, preview }) => {
         }
 
         .app-header {
-          background: rgba(255, 255, 255, 0.8);
+          background: rgba(255, 255, 255, 0.9);
           backdrop-filter: blur(12px);
-          height: 70px;
+          height: 64px;
           display: flex;
           align-items: center;
           position: sticky;
@@ -125,6 +158,7 @@ const AppLayout = ({ editor, preview }) => {
           justify-content: space-between;
           align-items: center;
           width: 100%;
+          padding: 0 1.5rem;
         }
 
         .brand {
@@ -134,9 +168,8 @@ const AppLayout = ({ editor, preview }) => {
         }
         
         .brand-logo {
-            width: 36px; /* Slightly larger for image */
-            height: 36px;
-            /* Removed background and box-shadow to let the logo shine */
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -144,20 +177,24 @@ const AppLayout = ({ editor, preview }) => {
 
         .brand h1 {
           font-family: 'Outfit', sans-serif;
-          font-size: 1.5rem;
+          font-size: 1.35rem;
           font-weight: 700;
-          /* Sophisticated gradient: Dark Slate to Vibrant Blue */
           background: linear-gradient(120deg, #1e293b 0%, #2563eb 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           letter-spacing: -0.02em;
-          text-shadow: 0 2px 10px rgba(59, 130, 246, 0.1); /* Subtle glow */
         }
 
         .actions {
           display: flex;
           align-items: center;
-          gap: 0.75rem;
+          gap: 0.5rem;
+        }
+
+        .desktop-actions {
+          display: flex;
+          gap: 0.5rem;
+          margin-right: 0.5rem;
         }
         
         .divider {
@@ -174,6 +211,40 @@ const AppLayout = ({ editor, preview }) => {
         .main-content {
           flex: 1;
           overflow: hidden;
+          position: relative;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .mobile-tabs {
+          display: none;
+          background: white;
+          border-bottom: 1px solid hsl(var(--color-border));
+          padding: 0.5rem 1rem;
+          gap: 1rem;
+          justify-content: center;
+        }
+
+        .tab-btn {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          padding: 0.5rem;
+          border-radius: var(--radius-md);
+          font-weight: 600;
+          font-size: 0.9rem;
+          color: hsl(var(--color-text-muted));
+          background: transparent;
+          border: 1px solid transparent;
+          transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+          background: hsl(var(--color-primary-light));
+          color: hsl(var(--color-primary));
+          border-color: hsl(var(--color-primary) / 0.2);
         }
 
         .split-container {
@@ -181,6 +252,7 @@ const AppLayout = ({ editor, preview }) => {
           height: 100%;
           max-width: 1920px;
           margin: 0 auto;
+          width: 100%;
         }
 
         .editor-pane {
@@ -228,16 +300,107 @@ const AppLayout = ({ editor, preview }) => {
             margin-bottom: 3rem;
         }
 
+        .mobile-settings-row {
+          display: none;
+        }
+
+        /* Responsive Styles */
         @media (max-width: 1024px) {
-          .split-container {
-            flex-direction: column;
+          .preview-pane {
+            padding: 2rem;
+            align-items: flex-start; /* Better scrolling on tablets */
+          }
+        }
+
+        @media (max-width: 768px) {
+          .app-header {
+            height: 56px;
+            padding: 0;
           }
           
-          .editor-pane {
-             max-width: 100%;
-             border-right: none;
-             border-bottom: 1px solid hsl(var(--color-border));
+          .header-content {
+            padding: 0 1rem;
           }
+
+          .brand h1 {
+            font-size: 1.2rem;
+            display: none; /* Hide text on very small screens if needed, or keep short */
+          }
+
+          .brand-logo { 
+             margin-right: 0; 
+          }
+
+          /* Hide Desktop Actions in Header */
+          .desktop-actions {
+            display: none;
+          }
+
+          /* Show Mobile Settings inside Editor */
+          .mobile-settings-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+          }
+
+          /* Icon Only Buttons */
+          .icon-only-mobile {
+            padding: 0.5rem;
+          }
+          .icon-only-mobile .btn-text {
+            display: none;
+          }
+          
+          .divider {
+            display: none;
+          }
+
+          /* Tab System */
+          .mobile-tabs {
+            display: flex;
+          }
+
+          .split-container {
+             flex-direction: column;
+          }
+
+          /* Hide panes based on tab */
+          .mobile-tab-editor .preview-pane {
+             display: none;
+          }
+          .mobile-tab-editor .editor-pane {
+             display: block;
+             width: 100%;
+             border-right: none;
+             max-width: 100%;
+          }
+          
+          .mobile-tab-preview .editor-pane {
+             display: none;
+          }
+          .mobile-tab-preview .preview-pane {
+             display: flex;
+             width: 100%;
+             padding: 1rem;
+             align-items: flex-start;
+          }
+           
+          .pane-content {
+             padding: 1.5rem 1rem;
+          }
+          
+          .preview-wrapper {
+            transform: scale(0.65);
+            transform-origin: top center;
+            margin-bottom: 0;
+            /* Adjust scale based on screen width dynamically is hard without JS, 
+               but 0.6 is a safe bet for A4 on mobile */
+          }
+        }
+        
+        @media (min-width: 769px) {
+           .brand h1 { display: block; }
         }
       `}</style>
     </div>
