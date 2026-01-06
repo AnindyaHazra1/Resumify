@@ -140,7 +140,8 @@ const AppLayout = ({ editor, preview }) => {
         .app-layout {
           display: flex;
           flex-direction: column;
-          height: 100vh;
+          height: 100vh; /* Fallback */
+          height: 100dvh; /* Mobile viewport fix */
           background: hsl(var(--color-background));
         }
 
