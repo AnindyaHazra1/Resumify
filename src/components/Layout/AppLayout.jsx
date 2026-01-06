@@ -387,7 +387,7 @@ const AppLayout = ({ editor, preview }) => {
           }
            
           .pane-content {
-             padding: 1.5rem 1rem;
+             padding: 1.5rem 1rem 8rem 1rem;
           }
           
           .preview-wrapper {
