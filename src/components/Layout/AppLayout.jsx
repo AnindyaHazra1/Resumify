@@ -382,8 +382,10 @@ const AppLayout = ({ editor, preview }) => {
           .mobile-tab-preview .preview-pane {
              display: flex;
              width: 100%;
-             padding: 1rem;
+             padding: 1rem 0; /* Reduce padding to give more width to scale */
              align-items: flex-start;
+             justify-content: center; /* Center the preview */
+             overflow-x: hidden;
           }
            
           .pane-content {
@@ -391,12 +393,16 @@ const AppLayout = ({ editor, preview }) => {
           }
           
           .preview-wrapper {
-            transform: scale(0.65);
+            transform: scale(0.45); /* Smaller scale for phones */
             transform-origin: top center;
-            margin-bottom: 0;
-            /* Adjust scale based on screen width dynamically is hard without JS, 
-               but 0.6 is a safe bet for A4 on mobile */
+            margin-bottom: -40%; /* Compensate for whitespace created by scaling down */
           }
+        }
+
+        @media (min-width: 481px) and (max-width: 768px) {
+           .preview-wrapper {
+             transform: scale(0.65);
+           }
         }
         
         @media (min-width: 769px) {
