@@ -5,6 +5,7 @@ import ConfirmModal from '../UI/ConfirmModal';
 import ThemeSelector from '../UI/ThemeSelector';
 import FontSelector from '../UI/FontSelector';
 import Logo from '../../assets/logo.png';
+import Footer from './Footer';
 
 const AppLayout = ({ editor, preview }) => {
   const { resetResume, resumeData, handleThemeChange, handleFontChange } = useResume();
@@ -122,6 +123,8 @@ const AppLayout = ({ editor, preview }) => {
           </div>
         </div>
       </main>
+
+      <Footer />
 
       <ConfirmModal
         isOpen={isResetModalOpen}
