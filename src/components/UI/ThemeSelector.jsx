@@ -1,8 +1,9 @@
-import { Palette, RotateCcw, Check, Plus } from 'lucide-react';
+import { Palette, RotateCcw, Check, Plus, ArrowLeft, Hash } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
+import { HexColorPicker } from "react-colorful";
 
 const PRESET_COLORS = [
-  '#2563eb', // Blue (Default-ish)
+  '#2563eb', // Blue
   '#0f172a', // Slate
   '#059669', // Emerald
   '#7c3aed', // Violet
@@ -16,13 +17,17 @@ const DEFAULT_COLOR = '#2563eb';
 
 const ThemeSelector = ({ currentColor, onThemeChange }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showCustom, setShowCustom] = useState(false);
   const dropdownRef = useRef(null);
-  const inputRef = useRef(null);
+
+  // Initial color for the picker if current is invalid
+  const validColor = /^#[0-9A-F]{6}$/i.test(currentColor) ? currentColor : DEFAULT_COLOR;
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
+        setShowCustom(false); // Reset on close
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -31,16 +36,6 @@ const ThemeSelector = ({ currentColor, onThemeChange }) => {
 
   const handleColorSelect = (color) => {
     onThemeChange(color);
-    // Don't close immediately so user can see selection
-  };
-
-  const handleCustomClick = () => {
-    inputRef.current?.click();
-  };
-
-  const handleCustomChange = (e) => {
-    onThemeChange(e.target.value);
-    // Keep dropdown open or close? Maybe keep open to see result.
   };
 
   return (
@@ -54,50 +49,67 @@ const ThemeSelector = ({ currentColor, onThemeChange }) => {
 
       {isOpen && (
         <div className="theme-dropdown">
-          <div className="dropdown-header">Premium Colors</div>
-          <div className="color-grid">
-            {PRESET_COLORS.map((color) => (
-              <button
-                key={color}
-                className={`color-option ${currentColor === color ? 'selected' : ''}`}
-                style={{ backgroundColor: color }}
-                onClick={() => handleColorSelect(color)}
-                aria-label={`Select color ${color}`}
-              >
-                {currentColor === color && <Check size={14} color="#fff" strokeWidth={3} />}
-              </button>
-            ))}
-          </div>
-
-          <div className="divider"></div>
-
-          <div className="custom-section">
-            <div className="dropdown-header">Custom</div>
-            <div className="custom-actions">
-              <div className="custom-picker-btn" onClick={handleCustomClick}>
-                <div className="rainbow-gradient"></div>
-                <Plus size={14} className="plus-icon" />
-                <span className="custom-text">Pick Color</span>
+          {!showCustom ? (
+            <>
+              <div className="dropdown-header">Premium Colors</div>
+              <div className="color-grid">
+                {PRESET_COLORS.map((color) => (
+                  <button
+                    key={color}
+                    className={`color-option ${currentColor === color ? 'selected' : ''}`}
+                    style={{ backgroundColor: color }}
+                    onClick={() => handleColorSelect(color)}
+                    aria-label={`Select color ${color}`}
+                  >
+                    {currentColor === color && <Check size={14} color="#fff" strokeWidth={3} />}
+                  </button>
+                ))}
               </div>
-              <button
-                className="reset-action"
-                onClick={() => onThemeChange(DEFAULT_COLOR)}
-                title="Reset to Default"
-              >
-                <RotateCcw size={14} />
-              </button>
+
+              <div className="divider"></div>
+
+              <div className="custom-section">
+                <div className="custom-picker-btn" onClick={() => setShowCustom(true)}>
+                  <div className="rainbow-gradient"></div>
+                  <Plus size={14} className="plus-icon" />
+                  <span className="custom-text">Custom Color</span>
+                </div>
+                <button
+                  className="reset-action"
+                  onClick={() => onThemeChange(DEFAULT_COLOR)}
+                  title="Reset to Default"
+                >
+                  <RotateCcw size={14} />
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="custom-picker-view">
+              <div className="picker-header">
+                <button className="back-btn" onClick={() => setShowCustom(false)}>
+                  <ArrowLeft size={14} /> Back
+                </button>
+                <span className="header-title">Custom Color</span>
+              </div>
+
+              <div className="picker-wrapper">
+                <HexColorPicker color={validColor} onChange={onThemeChange} />
+              </div>
+
+              <div className="hex-input-wrapper">
+                <Hash size={14} className="hex-icon" />
+                <input
+                  type="text"
+                  value={currentColor}
+                  onChange={(e) => onThemeChange(e.target.value)}
+                  className="hex-input"
+                  placeholder="#000000"
+                />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
-
-      <input
-        ref={inputRef}
-        type="color"
-        className="hidden-input"
-        value={currentColor || DEFAULT_COLOR}
-        onChange={handleCustomChange}
-      />
 
       <style jsx="true">{`
         .theme-selector {
@@ -123,7 +135,6 @@ const ThemeSelector = ({ currentColor, onThemeChange }) => {
         .selector-trigger:hover {
             border-color: hsl(var(--color-primary));
             transform: translateY(-1px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
         .color-preview {
@@ -155,16 +166,15 @@ const ThemeSelector = ({ currentColor, onThemeChange }) => {
         .theme-dropdown {
             position: absolute;
             top: calc(100% + 8px);
-            right: -10px;
+            right: 0; /* Align perfectly with the right edge */
             width: 240px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.5);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.6);
             border-radius: 12px;
             padding: 12px;
             box-shadow: 
-                0 10px 25px -5px rgba(0, 0, 0, 0.1), 
-                0 8px 10px -6px rgba(0, 0, 0, 0.1),
+                0 10px 30px -5px rgba(0, 0, 0, 0.15), 
                 0 0 0 1px rgba(0,0,0,0.05);
             z-index: 100;
             transform-origin: top right;
@@ -172,7 +182,7 @@ const ThemeSelector = ({ currentColor, onThemeChange }) => {
         }
 
         @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px) scale(0.95); }
+            from { opacity: 0; transform: translateY(-8px) scale(0.96); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
@@ -202,13 +212,12 @@ const ThemeSelector = ({ currentColor, onThemeChange }) => {
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.2s;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .color-option:hover {
-            transform: scale(1.15);
-            z-index: 2;
+            transform: scale(1.1);
         }
 
         .color-option.selected {
@@ -222,7 +231,7 @@ const ThemeSelector = ({ currentColor, onThemeChange }) => {
             margin: 0 -12px 12px -12px;
         }
 
-        .custom-actions {
+        .custom-section {
             display: flex;
             gap: 8px;
         }
@@ -246,8 +255,8 @@ const ThemeSelector = ({ currentColor, onThemeChange }) => {
         }
 
         .rainbow-gradient {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             background: conic-gradient(red, yellow, lime, aqua, blue, magenta, red);
             border: 2px solid white;
@@ -275,15 +284,77 @@ const ThemeSelector = ({ currentColor, onThemeChange }) => {
 
         .reset-action:hover {
             background: #fee2e2;
-            transform: rotate(-15deg);
         }
 
-        .hidden-input {
-            position: absolute;
-            width: 0;
-            height: 0;
-            opacity: 0;
-            pointer-events: none;
+        /* Custom Picker View */
+        .picker-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.75rem;
+            color: #64748b;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+        }
+
+        .back-btn:hover {
+            background: #f1f5f9;
+            color: #334155;
+        }
+        
+        .header-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .picker-wrapper {
+            margin-bottom: 12px;
+        }
+        
+        /* Overwrite react-colorful styles slightly */
+        .react-colorful {
+            width: 100% !important;
+            height: 150px !important;
+        }
+
+        .hex-input-wrapper {
+            display: flex;
+            align-items: center;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 0 8px;
+        }
+
+        .hex-icon {
+            color: #94a3b8;
+            margin-right: 4px;
+        }
+
+        .hex-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            height: 32px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #334155;
+            text-transform: uppercase;
+        }
+
+        .hex-input:focus {
+            outline: none;
         }
 
         @media (max-width: 768px) {
@@ -293,8 +364,10 @@ const ThemeSelector = ({ currentColor, onThemeChange }) => {
            }
            
            .theme-dropdown {
-               right: -40px; /* Shift a bit to fit on screen */
+               right: -10px; 
+               /* Ensure it doesn't cross screen width */
                width: 220px;
+               max-width: 90vw;
            }
         }
       `}</style>
